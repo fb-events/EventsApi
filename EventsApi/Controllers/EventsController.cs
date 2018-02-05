@@ -54,7 +54,7 @@ namespace EventsApi.Controllers
                         Start = new CalDateTime(ParseDateTime(d.Start_time), "Europe/Vilnius"),
                         Summary = d.Name,
                         Location = d.Place != null ? d.Place.Name : "",
-                        Description = (d.Place != null && d.Place.Location != null) ? $"{d.Place.Location.Street}, {d.Place.Location.City}\n{d.Description}\n\nRenginio nuoroda https://www.facebook.com/events/{d.Id}" : d.Description
+                        Description = (d.Place != null && d.Place.Location != null) ? $"{d.Place.Location.Street}, {d.Place.Location.City}\n{d.Description}\n\nRenginio nuoroda https://www.facebook.com/events/{d.Id}" : $"{d.Description}\n\nRenginio nuoroda https://www.facebook.com/events/{d.Id}"
                     }
                 );
             }
