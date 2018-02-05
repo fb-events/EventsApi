@@ -10,8 +10,9 @@ namespace EventsApi.Model
     {
         public string Description { get; set; }
         public string Name { get; set; }
-        public DateTime End_time { get; set; }
-        public DateTime Start_time { get; set; }
+        public string End_time { get; set; }
+        public string Start_time { get; set; }
         public Place Place { get; set; }
+        public string Id { get; set; }
     }
 }
