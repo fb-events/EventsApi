@@ -20,13 +20,18 @@ namespace EventsApi.Controllers
     [Route("api/[controller]")]
     public class EventsController : Controller
     {
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        private Dictionary<string, string> _idToNameMap = new Dictionary<string, string>
         {
-            var groupId = "zygeiviai";
+            { "zygeiviai", "VUŽK" }
+        };
+
+        [HttpGet("{groupId}")]
+        public async Task<IActionResult> Get(string groupId)
+        {
+            groupId = groupId.ToLower();
 
             var response = JsonConvert.DeserializeObject<Response>(await GetData(groupId));
-            var calendar = ParseResponseToCalendar(response);
+            var calendar = ParseResponseToCalendar(response, _idToNameMap.ContainsKey(groupId) ? _idToNameMap[groupId] : groupId);
 
             var encodedCalendar = Encoding.UTF8.GetBytes(calendar);
 
@@ -41,7 +46,7 @@ namespace EventsApi.Controllers
            return await (await $"https://graph.facebook.com/v2.11/{groupId}/events?access_token=155115031944644|<secret>&debug=all&format=json&method=get&pretty=0&suppress_http_code=1&&since={since}&until={until}".GetAsync()).Content.ReadAsStringAsync();
         }
 
-        private string ParseResponseToCalendar(Response response)
+        private string ParseResponseToCalendar(Response response, string name)
         {
             var calendarEvents = new List<CalendarEvent>();
 
@@ -61,7 +66,7 @@ namespace EventsApi.Controllers
 
             var calendar = new Ical.Net.Calendar();
             
-            calendar.AddProperty("X-WR-CALNAME", "VUŽK");
+            calendar.AddProperty("X-WR-CALNAME", name);
             calendar.AddProperty("X-WR-TIMEZONE", "Europe/Vilnius");
             calendar.AddProperty("METHOD", "PUBLISH");
             calendar.AddProperty("CALSCALE", "GREGORIAN");
